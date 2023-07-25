@@ -1,6 +1,6 @@
 # Run Model - All this does is load a model, load testing data, and run the model on the testing data
 # Ryan Peruski, 07/25/23
-# usage: python run_model.py <model_path> <data_dir>
+# usage: python run_model.py <model_path> <data_dir> 2> /dev/null
 # Note that the results are printed to stdout
 
 import os, sys
@@ -11,7 +11,7 @@ import importlib.util
 warnings.filterwarnings("ignore", ".*does not have many workers.*")
 
 #My modules
-from mymodels import LitModel
+from mymodels import Load_Model
 from mydms import ImageDataTest
 
 #Parse args
@@ -19,17 +19,14 @@ if len(sys.argv) < 3:
     print("usage: python run_model.py <model_path> <data_dir>")
     exit(1)
 
-model_dir = sys.argv[1]
+model_path = sys.argv[1]
 data_dir = sys.argv[2]
 
 dm_2023 = ImageDataTest(data_dir=data_dir, batch_size=4)
 
-model = LitModel( # This model inherits from LitModel and automatically saves perf curves. Use LitModel if you don't want to save perf curves
-    lr=0.01, 
+model = Load_Model( # This model inherits from LitModel and automatically saves perf curves. Use LitModel if you don't want to save perf curves
     num_classes=dm_2023.num_classes, 
-    load=[True, 0], 
-    model_dir=model_dir,
-    model="EfficientNetB7",
+    model_path=model_path,
     test_data_dir=data_dir,
 )
 

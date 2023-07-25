@@ -23,13 +23,9 @@ from transformers import AutoModel, PretrainedConfig, AutoConfig
 
 # Normal Lightning Model, but supports EfficientNetB7 and ResNet18
 class LitModel(L.LightningModule):
-    def __init__(self, lr=0.01, num_classes=2, load=[False, 0], model_dir='.', model="EfficientNetB7", test_data_dir='.'):
+    def __init__(self, lr=0.01, num_classes=2, load=[False, 0], model_dir='.', model="EfficientNetB7"):
         super().__init__()
         self.num_classes = num_classes
-        self.test_data_dir = test_data_dir
-        self.predictions = []
-        self.targets = []
-        self.scores = []
 
         self.save_hyperparameters()
         if model=="EfficientNetB7":
@@ -98,22 +94,7 @@ class LitModel(L.LightningModule):
         acc = accuracy(preds, y, 'multiclass', num_classes=self.num_classes)
         self.log("test_loss", loss)
         self.log("test_acc", acc)
-        self.predictions.append(preds.detach().cpu().numpy())
-        self.targets.append(y.detach().cpu().numpy())
-        self.scores.append(torch.softmax(logits, dim=1)[:, 1].cpu().numpy())
         return loss
-    
-    def on_test_end(self):
-        predictions = np.concatenate(self.predictions)
-        targets = np.concatenate(self.targets)
-        scores = np.concatenate(self.scores)
-        self.test_dataset=ImageDataTest(self.test_data_dir)
-        self.test_dataset.setup()
-        filenames = self.test_dataset.return_test_filenames()
-        filenames = [os.path.basename(f) for f in filenames]
-        df = pd.DataFrame({'name': filenames, 'y_true': targets, 'y_pred': predictions, 'y_scores': scores})
-        for i, row in df.iterrows():
-            print(f"{row['name']}: {row['y_true']} -> {row['y_pred']} ({row['y_scores']})")
     
 class LitModelSave(LitModel):
     def __init__(self, lr=0.01, num_classes=2, load=[False, 0], model_dir='.', output_dir='.', model="EfficientNetB7",mode='Unknown',test_data_dir='.'):
@@ -445,7 +426,7 @@ class ViTClassifierSave(ViTClassifier):
         df.to_json(os.path.join(self.output_dir, f'{self.model_type}_{self.model_num}_perfs.json'))
 
 class Load_Model(L.LightningModule):
-    def __init__(self, lr=0.01, num_classes=2, load=[False, 0], model_dir='.', model="EfficientNetB7", test_data_dir='.'):
+    def __init__(self, num_classes=2, model_path='.', test_data_dir='.'):
         super().__init__()
         self.num_classes = num_classes
         self.test_data_dir = test_data_dir
@@ -454,60 +435,20 @@ class Load_Model(L.LightningModule):
         self.scores = []
 
         self.save_hyperparameters()
-        if model=="EfficientNetB7":
-            self.model = EfficientNet.from_pretrained('efficientnet-b7')
-            num_features = self.model._fc.in_features
-            self.model._fc = nn.Linear(num_features, self.num_classes)
-        elif model=="ResNet18":
-            self.model = models.resnet18(weights='IMAGENET1K_V1')
-            num_ftrs = self.model.fc.in_features
-            self.model.fc = nn.Linear(num_ftrs, self.num_classes)
-        else:
-            raise Exception(f"mymodels.py: Model {model} not implemented")
         
-        self.model_type = model
-        self.model_num = load[1]
         self.criterion = nn.CrossEntropyLoss()
-        self.lr = lr
-        self.optimizer = optim.SGD(self.model.parameters(), lr=lr, momentum=0.9) 
-        self.scheduler = optim.lr_scheduler.StepLR(self.optimizer, step_size=10, gamma=0.1)
 
         # Load model if specified. If the model doesn't exist, exit.
-        if load[0]:
-            try:
-                test = torch.load(f'{model_dir}/new_model_{load[1]}.pth')
-                self.model = test
-            except Exception as e:
-                print(f"mymodels.py: Error loading model: {e}")
-                sys.exit(1)
-
-
+        try:
+            test = torch.load(model_path)
+            self.model = test
+        except Exception as e:
+            print(f"mymodels.py: Error loading model: {e}")
+            sys.exit(1)
 
     def forward(self, x):
         logits = self.model(x)
         return logits
-
-    def training_step(self, batch, batch_idx):
-        x, y = batch
-        logits = self(x)
-        loss = self.criterion(logits, y)
-        self.log('train_loss', loss, prog_bar=True)
-        return loss
-
-    def validation_step(self, batch, batch_idx):
-        x, y = batch
-        logits = self(x)
-        loss = self.criterion(logits, y)
-        preds = torch.argmax(logits, dim=1)
-        #print(preds," before")
-        preds %= self.num_classes
-        #print(preds," after")
-        acc = accuracy(preds, y, 'multiclass', num_classes=self.num_classes)
-        self.log("val_loss", loss, prog_bar=True)
-        self.log("val_acc", acc, prog_bar=True)
-
-    def configure_optimizers(self):
-        return [self.optimizer], [self.scheduler]
     
     def test_step(self, batch, batch_idx):
         x, y = batch
