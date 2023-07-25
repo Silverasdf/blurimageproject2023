@@ -1,6 +1,6 @@
 # Run Model - All this does is load a model, load testing data, and run the model on the testing data
 # Ryan Peruski, 07/25/23
-# usage: python run_model.py <model_path> <data_dir> 2> /dev/null
+# usage: python run_model.py <model_path> <data_dir>
 # Note that the results are printed to stdout output is as follows:
 # {filename}: {label} -> {prediction} ({score})
 
