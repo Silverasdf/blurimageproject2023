@@ -44,6 +44,6 @@ Note: Read headers for more details on each program. Some of these programs are 
 
 ## Config
 
-### clip_config.py: Config file for CLIP Fine-Tuned
+clip_config.py: Config file for CLIP Fine-Tuned
 
-### pl_config.py: Config file for ResNet18, EfficientNetB7, Vision Transformer B 16
+pl_config.py: Config file for ResNet18, EfficientNetB7, Vision Transformer B 16
