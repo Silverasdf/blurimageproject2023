@@ -167,9 +167,9 @@ class LitModelSave(LitModel):
         for i in range(cm.shape[0]):
             for j in range(cm.shape[1]):
                 plt.text(j, i, format(cm[i, j], 'd'),
-                         ha="center",
-                         va="center",
-                         color="white" if cm[i, j] > thresh else "black")
+                        ha="center",
+                        va="center",
+                        color="white" if cm[i, j] > thresh else "black")
         
         cm_path = os.path.join(self.output_dir, f'{self.model_type}_{self.model_num}_confusion_matrix.png')
         plt.savefig(cm_path)
@@ -366,9 +366,9 @@ class ViTClassifierSave(ViTClassifier):
         for i in range(cm.shape[0]):
             for j in range(cm.shape[1]):
                 plt.text(j, i, format(cm[i, j], 'd'),
-                         ha="center",
-                         va="center",
-                         color="white" if cm[i, j] > thresh else "black")
+                        ha="center",
+                        va="center",
+                        color="white" if cm[i, j] > thresh else "black")
         
         cm_path = os.path.join(self.output_dir, f'{self.model_type}_{self.model_num}_confusion_matrix.png')
         plt.savefig(cm_path)
