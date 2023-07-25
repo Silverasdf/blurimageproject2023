@@ -11,6 +11,7 @@ import importlib.util
 warnings.filterwarnings("ignore", ".*does not have many workers.*")
 
 #My modules
+from mymodels import LitModel
 from mydms import ImageDataTest
 
 #Parse args
@@ -23,7 +24,14 @@ data_dir = sys.argv[2]
 
 dm_2023 = ImageDataTest(data_dir=data_dir, batch_size=4)
 
-model = torch.load(model_dir)
+model = LitModel( # This model inherits from LitModel and automatically saves perf curves. Use LitModel if you don't want to save perf curves
+    lr=0.01, 
+    num_classes=dm_2023.num_classes, 
+    load=[True, 0], 
+    model_dir=model_dir,
+    model="EfficientNetB7",
+    test_data_dir=data_dir,
+)
 
 trainer = L.Trainer(
     max_epochs=10,

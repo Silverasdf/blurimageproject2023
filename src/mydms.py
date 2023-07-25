@@ -72,7 +72,7 @@ class ImageData(L.LightningDataModule):
         return filenames
     
 
-class TestImageData(L.LightningDataModule):
+class ImageDataTest(L.LightningDataModule):
     def __init__(self, data_dir: str = "./", batch_size: int = 4):
         super().__init__()
         self.data_dir = data_dir
@@ -94,15 +94,14 @@ class TestImageData(L.LightningDataModule):
             ]),
         }
 
-        self.image_datasets = {x: ImageFolder(os.path.join(self.data_dir, x),
-                                            data_transforms[x])
-                            for x in ["Testing"]}
+        self.image_datasets = ImageFolder(self.data_dir,
+                                            data_transforms["Testing"])
 
     #Lightning stuff here
     def test_dataloader(self):
-        return DataLoader(self.image_datasets["Testing"],
+        return DataLoader(self.image_datasets,
                         batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
     def return_test_filenames(self):
-        filenames = self.image_datasets["Testing"].samples
+        filenames = self.image_datasets.samples
         filenames = [filenames[i][0] for i in range(len(filenames))]
         return filenames

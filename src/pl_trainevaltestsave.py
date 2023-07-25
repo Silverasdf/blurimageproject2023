@@ -76,6 +76,7 @@ def main():
                                         load=[not CFG.TRAIN, i], 
                                         model_dir=CFG.MODEL_DIR,
                                         model=CFG.MODEL_TYPE,
+                                        test_data_dir=CFG.NEW_DIR
                                     )
             else:
                 model = ViTClassifier( # This model inherits from ViTClassifier and automatically saves perf curves. Use ViTClassifier if you don't want to save perf curves

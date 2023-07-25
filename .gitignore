@@ -7,3 +7,4 @@ src/__pycache__
 Experiments/
 Analysis/MasterSheet_CSV_updated.csv
 Analysis/MasterSheet_2023_updated.csv
+lightning_logs/
