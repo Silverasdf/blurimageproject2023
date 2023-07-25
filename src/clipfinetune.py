@@ -1,4 +1,4 @@
-# Clipfinetune from "Simple Implemtation" - Ryan Peruski, 07/01/2023
+# Clipfinetune from "Simple Implementation" - Ryan Peruski, 07/01/2023
 # This takes from a modification of the openai CLIP github and modifies it to work with the blur image dataset. Link to that specific GitHub Below
 # https://github.com/moein-shariatnia/OpenAI-CLIP/blob/master/OpenAI%20CLIP%20Simple%20Implementation.ipynb
 # usage: python clipfinetune.py <config_file>

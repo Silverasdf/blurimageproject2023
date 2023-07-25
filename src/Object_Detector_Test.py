@@ -1,5 +1,5 @@
-#Object Detector Test - Ryan Peruski, 06/28/2023
-#Tests the object detector by comparing the detections to the ground truth
+# Object Detector Test - Ryan Peruski, 06/28/2023
+# Tests the object detector by comparing the detections to the ground truth
 import os
 import pandas as pd
 from cleanup import iou
@@ -8,13 +8,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import confusion_matrix, precision_recall_curve, roc_curve, roc_auc_score, accuracy_score
 
-gt = pd.read_csv('/root/BlurImageTrainingProject/Analysis/Analysis_All/MasterSheet_2023_updated.csv')
-det_dir = '/root/BlurImageTrainingProject/Experiments/Retina_Detections'
-output_dir = '/root/BlurImageTrainingProject/Experiments/Retina_Results'
-model_type = "RetinaFace"
-back_res = [91, 91]
-front_res = [275, 320]
-picture_size = [720, 480]
+# Config
+gt = pd.read_csv('/root/BlurImageTrainingProject/Analysis/Analysis_All/MasterSheet_2023_updated.csv') #CSV for gt
+det_dir = '/root/BlurImageTrainingProject/Experiments/Retina_Detections' # Directory for detections (created by another program such as face_detector_test.py)
+output_dir = '/root/BlurImageTrainingProject/Experiments/Retina_Results' # Directory for output JSON file and image
+model_type = "RetinaFace" # Model type (for output file name)
+back_res = [91, 91] # Resolution of back seat
+front_res = [275, 320] # Resolution of front seat
+picture_size = [720, 480] # Size of the picture
 
 front_pred=[]
 back_pred=[]
@@ -24,6 +25,7 @@ front_gt=[]
 back_gt=[]
 front_names=[]
 back_names=[]
+
 #Go through every row
 for index, row in gt.iterrows():
     #Find the corresponding detection file
@@ -69,7 +71,6 @@ for index, row in gt.iterrows():
         max_iou = max(ious)
         max_index = ious.index(max_iou)
         guesses[max_index] = score
-        # print(det, ious)
     actual = [int(row["DriverOcc"]), int(row["PassengerOcc"]), row["Occ1"], row["Occ2"], row["Occ3"], row["Occ4"], row["Occ5"], row["Occ6"]]
     for i, s in enumerate(actual):
         if i > 1: #Back Seat
@@ -85,11 +86,6 @@ for index, row in gt.iterrows():
                 front_pred.append(1 if guesses[i] > 0.5 else 0)
                 front_gt.append(s)
                 front_names.append(row['Filename'])
-    # print(front_gt, front_pred, front_scores)
-    # print(back_gt, back_pred, back_scores)
-    # print(dets, guesses, actual)
-# print(len(front_gt), len(front_pred), len(front_scores))
-# print(len(back_gt), len(back_pred), len(back_scores))
 
 
 #From here on it's plotting

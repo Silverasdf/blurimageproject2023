@@ -1,3 +1,6 @@
+# Face Detector Test - This writes detection files for the RetinaFace model
+# Ryan Peruski, 07/25/23
+# I did not too much to this program. Original can be found here:
 # https://sefiks.com/2021/04/27/deep-face-detection-with-retinaface-in-python/
 # pip install retina-face
 # https://pypi.org/project/retina-face/

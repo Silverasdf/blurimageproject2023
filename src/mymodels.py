@@ -425,6 +425,8 @@ class ViTClassifierSave(ViTClassifier):
         df = pd.DataFrame({'name': filenames, 'y_true': targets, 'y_pred': predictions, 'y_scores': scores, 'mode': self.mode, 'prevalence': prevalence})
         df.to_json(os.path.join(self.output_dir, f'{self.model_type}_{self.model_num}_perfs.json'))
 
+# This is only used in run_model.py, but it is a modified version of the LitModel class that only
+# tests and prints results to stdout
 class Load_Model(L.LightningModule):
     def __init__(self, num_classes=2, model_path='.', test_data_dir='.'):
         super().__init__()

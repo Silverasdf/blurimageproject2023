@@ -60,3 +60,11 @@ Note: Read headers for more details on each program. Some of these programs are 
 clip_config.py: Config file for CLIP Fine-Tuned
 
 pl_config.py: Config file for ResNet18, EfficientNetB7, Vision Transformer B 16
+
+## Analysis
+
+filter.py: Helper function for filtering out drivers in the results JSON file. This is very specific to my data, so it is not recommended to use this
+
+combine_perf_curves.ipynb: Combines the performance curves from the different model JSON files into one plot. This also includes tables with important information.
+
+different_perc_data.ipynb: Creates plots for the different percentages of data used for training. This also took data from many different output JSON files and combined them into a managable few data frames.

@@ -18,6 +18,7 @@ class ImageData(L.LightningDataModule):
         self.num_classes = 2
         self.batch_size = batch_size
 
+    # Makes the actual image datasets
     def setup(self, stage=None):
         # Assign train/val/test datasets for use in dataloaders - do data augmentation
         data_transforms = {
@@ -71,7 +72,7 @@ class ImageData(L.LightningDataModule):
         filenames = [filenames[i][0] for i in range(len(filenames))]
         return filenames
     
-
+#This is the same as the other class, but is only meant for testing. This is used in run_model.py
 class ImageDataTest(L.LightningDataModule):
     def __init__(self, data_dir: str = "./", batch_size: int = 4):
         super().__init__()
