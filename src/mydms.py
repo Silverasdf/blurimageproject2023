@@ -70,3 +70,39 @@ class ImageData(L.LightningDataModule):
         filenames = self.image_datasets["Testing"].samples
         filenames = [filenames[i][0] for i in range(len(filenames))]
         return filenames
+    
+
+class TestImageData(L.LightningDataModule):
+    def __init__(self, data_dir: str = "./", batch_size: int = 4):
+        super().__init__()
+        self.data_dir = data_dir
+        self.num_workers = 0
+        self.num_classes = 2
+        self.batch_size = batch_size
+
+    def setup(self, stage=None):
+        # Assign train/val/test datasets for use in dataloaders - do data augmentation
+        data_transforms = {
+            "Testing": transforms.Compose([
+                transforms.Resize(256),
+                transforms.CenterCrop(224),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAffine(degrees=0, translate=(0.025, 0.025)),
+                transforms.ColorJitter(brightness=0.2, contrast=0.2),
+                transforms.ToTensor(),
+                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+            ]),
+        }
+
+        self.image_datasets = {x: ImageFolder(os.path.join(self.data_dir, x),
+                                            data_transforms[x])
+                            for x in ["Testing"]}
+
+    #Lightning stuff here
+    def test_dataloader(self):
+        return DataLoader(self.image_datasets["Testing"],
+                        batch_size=self.batch_size, shuffle=False, num_workers=self.num_workers)
+    def return_test_filenames(self):
+        filenames = self.image_datasets["Testing"].samples
+        filenames = [filenames[i][0] for i in range(len(filenames))]
+        return filenames

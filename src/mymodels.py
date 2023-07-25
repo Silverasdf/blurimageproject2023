@@ -18,7 +18,7 @@ from PIL import Image, ImageDraw, ImageFont
 import pandas as pd
 import clip
 import torch.nn.utils.rnn as rnn_utils
-from mydms import ImageData
+from mydms import ImageData, ImageDataTest
 from transformers import AutoModel, PretrainedConfig, AutoConfig
 
 # Normal Lightning Model, but supports EfficientNetB7 and ResNet18
@@ -26,6 +26,9 @@ class LitModel(L.LightningModule):
     def __init__(self, lr=0.01, num_classes=2, load=[False, 0], model_dir='.', model="EfficientNetB7"):
         super().__init__()
         self.num_classes = num_classes
+        self.predictions = []
+        self.targets = []
+        self.scores = []
 
         self.save_hyperparameters()
         if model=="EfficientNetB7":
@@ -94,7 +97,22 @@ class LitModel(L.LightningModule):
         acc = accuracy(preds, y, 'multiclass', num_classes=self.num_classes)
         self.log("test_loss", loss)
         self.log("test_acc", acc)
+        self.predictions.append(preds.detach().cpu().numpy())
+        self.targets.append(y.detach().cpu().numpy())
+        self.scores.append(torch.softmax(logits, dim=1)[:, 1].cpu().numpy())
         return loss
+    
+    def on_test_end(self):
+        predictions = np.concatenate(self.predictions)
+        targets = np.concatenate(self.targets)
+        scores = np.concatenate(self.scores)
+        self.test_dataset=ImageDataTest(self.test_data_dir)
+        self.test_dataset.setup()
+        filenames = self.test_dataset.return_test_filenames()
+        filenames = [os.path.basename(f) for f in filenames]
+        df = pd.DataFrame({'name': filenames, 'y_true': targets, 'y_pred': predictions, 'y_scores': scores})
+        for i, row in df.iterrows():
+            print(f"{row['name']}: {row['y_true']} -> {row['y_pred']} ({row['y_scores']})")
     
 class LitModelSave(LitModel):
     def __init__(self, lr=0.01, num_classes=2, load=[False, 0], model_dir='.', output_dir='.', model="EfficientNetB7",mode='Unknown',test_data_dir='.'):
@@ -103,9 +121,6 @@ class LitModelSave(LitModel):
         self.mode = mode
         self.output_dir = output_dir
         self.test_data_dir = test_data_dir
-        self.predictions = []
-        self.targets = []
-        self.scores = []
 
     def test_step(self, batch, batch_idx):
         x, y = batch
