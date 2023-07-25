@@ -1,0 +1,9 @@
+Data_Front/
+Data_Back/
+Old_scripts/
+weather_CLIP/
+weather_images_for_ornl/
+src/__pycache__
+Experiments/
+Analysis/MasterSheet_CSV_updated.csv
+Analysis/MasterSheet_2023_updated.csv
