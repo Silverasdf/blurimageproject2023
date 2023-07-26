@@ -3,7 +3,9 @@ Data_Back/
 Old_scripts/
 weather_CLIP/*png
 weather_CLIP/*json
-weather_images_for_ornl/
+weather_videos_for_ornl/
+weather_pictures_for_ornl/
+new_weather_pictures_for_ornl/
 src/__pycache__
 Experiments/
 Analysis/MasterSheet_CSV_updated.csv

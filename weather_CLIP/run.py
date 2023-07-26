@@ -13,7 +13,7 @@ from tqdm import tqdm
 #Some config here
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 model, preprocess = clip.load("ViT-B/32", device=device)
-dir = "/root/BlurImageTrainingProject/weather_images_for_ornl"
+dir = "/root/BlurImageTrainingProject/new_weather_pictures_for_ornl"
 output_file = '/root/BlurImageTrainingProject/weather_CLIP/results.json'
 batch_size = 4
 classes = ['clear', 'cloudy', 'fog', 'night', 'partly_cloudy', 'rain', 'snow'] # Actual names of classes
