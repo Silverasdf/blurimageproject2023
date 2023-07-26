@@ -1,7 +1,8 @@
 Data_Front/
 Data_Back/
 Old_scripts/
-weather_CLIP/
+weather_CLIP/*png
+weather_CLIP/*json
 weather_images_for_ornl/
 src/__pycache__
 Experiments/

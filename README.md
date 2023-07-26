@@ -21,15 +21,19 @@ conda activate pytorch
 
 You do not have to do this, as there are a lot of extra libraries in this environment, but I know that running in this environment works.
 
+For all data, assume that you need class folders. There may be some fine-tuning to do for the different classification problems, but this is the general idea.
+
 From here, you can follow the usages of the different folders. Note different things such as directories that may need to be changed in programs.
 
 ## Folders
 
-Config: Contains a template for a config file for the different programs
+config: Contains a template for a config file for the different programs
 
 src: Contains the source code for the different programs
 
 Analysis: Contains Code I ran for the plots
+
+weather_CLIP: This is mainly just "icing on the cake" that uses the CLIP Zero-Shot method to classify images based on the weather. This is not part of the main project, but I had extra time at the end of the internship, so I figured I would also add this here.
 
 ## src
 
@@ -68,3 +72,9 @@ filter.py: Helper function for filtering out drivers in the results JSON file. T
 combine_perf_curves.ipynb: Combines the performance curves from the different model JSON files into one plot. This also includes tables with important information.
 
 different_perc_data.ipynb: Creates plots for the different percentages of data used for training. This also took data from many different output JSON files and combined them into a managable few data frames.
+
+## weather_CLIP
+
+run.py: This works the same way as clipzeroshot.py, but it is for the weather classification. It also outputs a results JSON file.
+
+showmatrix.ipynb: This is a helper program that I used to create the confusion matrix for the weather classification.
