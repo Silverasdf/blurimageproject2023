@@ -428,10 +428,11 @@ class ViTClassifierSave(ViTClassifier):
 # This is only used in run_model.py, but it is a modified version of the LitModel class that only
 # tests and prints results to stdout
 class Load_Model(L.LightningModule):
-    def __init__(self, num_classes=2, model_path='.', test_data_dir='.'):
+    def __init__(self, num_classes=2, model_path='.', test_data_dir='.', output_file='.'):
         super().__init__()
         self.num_classes = num_classes
         self.test_data_dir = test_data_dir
+        self.output_file = output_file
         self.predictions = []
         self.targets = []
         self.scores = []
@@ -457,9 +458,7 @@ class Load_Model(L.LightningModule):
         logits = self(x)
         loss = F.nll_loss(logits, y)
         preds = torch.argmax(logits, dim=1)
-        #print(preds," before")
         preds %= self.num_classes
-        #print(preds, " after")
         acc = accuracy(preds, y, 'multiclass', num_classes=self.num_classes)
         self.log("test_loss", loss)
         self.log("test_acc", acc)
@@ -476,6 +475,8 @@ class Load_Model(L.LightningModule):
         self.test_dataset.setup()
         filenames = self.test_dataset.return_test_filenames()
         filenames = [os.path.basename(f) for f in filenames]
-        df = pd.DataFrame({'name': filenames, 'y_true': targets, 'y_pred': predictions, 'y_scores': scores})
+        df = pd.DataFrame({'name': filenames, 'y_true': targets, 'y_pred': predictions, 'y_scores_one': scores})
+        df['y_scores_zero'] = 1 - df['y_scores_one']
+        df.to_csv(self.output_file, index=False)
         for i, row in df.iterrows():
-            print(f"{row['name']}: {row['y_true']} -> {row['y_pred']} ({row['y_scores']})")
+            print(f"{row['name']}: {row['y_true']} -> {row['y_pred']} ({row['y_scores_zero']:.3f}, {row['y_scores_one']:.3f})")
