@@ -78,3 +78,5 @@ different_perc_data.ipynb: Creates plots for the different percentages of data u
 run.py: This works the same way as clipzeroshot.py, but it is for the weather classification. It also outputs a results JSON file.
 
 showmatrix.ipynb: This is a helper program that I used to create the confusion matrix for the weather classification.
+
+make_data.sh: This program used ffmpeg to turn videos into images. This is very specific to my data, since my data was in video format.
