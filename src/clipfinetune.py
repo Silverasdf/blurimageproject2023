@@ -2,6 +2,8 @@
 # This takes from a modification of the openai CLIP github and modifies it to work with the blur image dataset. Link to that specific GitHub Below
 # https://github.com/moein-shariatnia/OpenAI-CLIP/blob/master/OpenAI%20CLIP%20Simple%20Implementation.ipynb
 # usage: python clipfinetune.py <config_file>
+# Note: The config file does not hold everything to configure. For that, scroll down to the CFG class. That includes other important settings such as train/test mode or 
+# hyperparameters. I tried to make is as similar to pl_trainevaltestsave as possible, and if I had more time, I would put somehow try to utilize this code inside pl_trainevaltestsave.py
 import os
 import cv2
 import gc
